@@ -5,8 +5,12 @@
   <title>Guntsu_Z</title>
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
+  
   <style>
+     @font-face {
+  font-family: 'Picksaw';
+  src: url('Picksaw.ttf') format('truetype');
+}
     html, body {
       margin: 0;
       padding: 0;
@@ -36,7 +40,7 @@
     }
 
     .content-box {
-      background-color: #00000050;
+      background-color: #000000a1;
       border-radius: 60px;
       padding: 20px;
       display: flex;
@@ -80,7 +84,7 @@
     }
 
     .bio-box {
-      background-color: rgba(0, 0, 0, 0.363);
+      background-color: rgba(0, 0, 0, 0.452);
       height: 80px;
       border-radius: 30px;
       padding: 10px;
@@ -147,19 +151,27 @@
       justify-content:center;
     }
 
-    #overlay span {
+      #overlay span {
       color:white;
-      font-size:2.5rem;
+      font-size:5rem;
       font-weight:bold;
+      transition: transform 0.3s, opacity 0.3s;
+    }
+    #overlay span.grow {
+      transform: scale(1.6);
+      opacity: 0;
+    }
+    #overlay-text {
+      font-family: 'Picksaw'; /* เปลี่ยนฟอนต์ตรงนี้ */
+      letter-spacing: 2px;
     }
   </style>
 </head>
 <body>
 <script src="scr.js"></script>
-  <div id="overlay">
-    <span>คลิก</span>
+ <div id="overlay">
+    <span id="overlay-text">C l i c k</span>
   </div>
-
   <video class="bg" autoplay muted loop>
     <source src="wallpaper.mp4" type="video/mp4">
     <source src="wallpaper2.webm" type="video/webm">
@@ -168,6 +180,8 @@
   <audio id="bg-music" autoplay loop muted>
     <source src="sound.mp3" type="audio/mpeg">
   </audio>
+
+<audio id="click-sound" src="Click.mp3"></audio>
 
   <button id="toggleMusic">🔈</button>
 
@@ -181,21 +195,51 @@
         </div>
       </div>
     </div>
-    <div class="icon-row">
-      <div class="icon-button" onclick="window.location.href='https://discord.gg/AWxNu274uf'"><i class="fab fa-discord"></i></div>
-      <div class="icon-button" onclick="window.location.href='https://www.tiktok.com/@gansuly'"><i class="fab fa-tiktok"></i></div>
-      <div class="icon-button" onclick="window.location.href='https://www.roblox.com/users/2812658645/profile'"><i class="fa-solid fa-cube"></i></div>
-    </div>
+<div class="icon-row">
+  <div class="icon-button" data-label="Discord" data-url="https://discord.gg/AWxNu274uf">
+    <i class="fab fa-discord"></i>
   </div>
-
-  <script>
+  <div class="icon-button" data-label="Tiktok" data-url="https://www.tiktok.com/@gansuly">
+    <i class="fab fa-tiktok"></i>
+  </div>
+  <div class="icon-button" data-label="Roblox" data-url="https://www.roblox.com/users/2812658645/profile">
+    <i class="fa-solid fa-cube"></i>
+  </div>
+</div>
+<div id="icon-label" style="text-align:center; color:white; font-size:20px; margin-top:10px; min-height:24px;"></div>
+ <script>
     document.getElementById('overlay').addEventListener('click', function() {
-      this.style.display = 'none';
-      const music = document.getElementById('bg-music');
-      music.muted = false;
-      music.play();
+      const clickSound = document.getElementById('click-sound');
+      clickSound.currentTime = 0
+      clickSound.play();
+      const overlayText = document.getElementById('overlay-text');
+      overlayText.classList.add('grow');
+      setTimeout(() => {
+        document.getElementById('overlay').style.display = 'none';
+        const music = document.getElementById('bg-music');
+        music.muted = false;
+        music.play();
+      }, 300); 
     });
+document.querySelectorAll('.icon-button').forEach(btn => {
+  btn.addEventListener('mouseenter', function() {
+    document.getElementById('icon-label').textContent = this.getAttribute('data-label');
+  });
+  btn.addEventListener('mouseleave', function() {
+    document.getElementById('icon-label').textContent = '';
+  });
+  btn.addEventListener('click', function(e) {
+    const clickSound = document.getElementById('click-sound');
+    clickSound.currentTime = 0;
+    clickSound.play();
+    setTimeout(() => {
+      window.location.href = this.getAttribute('data-url');
+    }, 100);
+    e.preventDefault();
+  });
+});
   </script>
+
 
 </body>
 </html>
