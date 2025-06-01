@@ -5,17 +5,32 @@
   <title>Guntsu_Z</title>
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  
   <style>
      @font-face {
+  font-family: 'THAIFONT';
+  src: url('THAIFONT.ttf') format('truetype');
+}
+@font-face {
   font-family: 'Picksaw';
   src: url('Picksaw.ttf') format('truetype');
 }
+@keyframes floatY {
+  0%   { transform: translate(0, 0); }
+  20%  { transform: translate(-1px, -2px); }
+  50%  { transform: translate(1px, 2px); }
+  80%  { transform: translate(-1px, -2px); }
+  100% { transform: translate(0, 0); }
+}
+.content-box {
+animation: shake 0.4s;
+  animation: floatY 1.2s infinite linear;
+}
+
     html, body {
       margin: 0;
       padding: 0;
       height: 100%;
-      font-family: 'Kanit', sans-serif;
+      font-family: 'THAIFONT', 'Kanit';
       overflow: hidden;
     }
 
@@ -40,7 +55,7 @@
     }
 
     .content-box {
-      background-color: #000000a1;
+      background-color: #270036a1;
       border-radius: 60px;
       padding: 20px;
       display: flex;
@@ -69,9 +84,18 @@
       flex-direction: column;
       gap: 20px;
     }
-
+.clock-box {
+  width: 100%;
+  text-align: center;
+  font-size: 22px;
+  color: #fff;
+  font-family: 'Kanit', Tahoma, Arial, sans-serif;
+  margin-bottom: 4px;
+  letter-spacing: 2px;
+  text-shadow: 0 1px 8px #000;
+}
     .name-box {
-      background-color: rgba(0, 0, 0, 0);
+      background-color: rgba(24, 0, 51, 0);
       height: 40px;
       width: 120px;
       border-radius: 20px;
@@ -84,7 +108,7 @@
     }
 
     .bio-box {
-      background-color: rgba(0, 0, 0, 0.452);
+      background-color: rgba(34, 0, 61, 0.452);
       height: 80px;
       border-radius: 30px;
       padding: 10px;
@@ -103,7 +127,7 @@
     .icon-button {
       width: 40px;
       height: 40px;
-      background-color: #000000;
+      background-color: #25003f;
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -126,8 +150,8 @@
       height: 64px;
       border: none;
       border-radius: 20px;
-      background: rgba(100, 94, 94, 0.274);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      background: rgba(36, 0, 77, 0.274);
+      box-shadow: 0 2px 8px rgba(53, 0, 78, 0.15);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -161,10 +185,56 @@
       transform: scale(1.6);
       opacity: 0;
     }
-    #overlay-text {
-      font-family: 'Picksaw'; /* เปลี่ยนฟอนต์ตรงนี้ */
-      letter-spacing: 2px;
-    }
+#overlay-text {
+  font-family: 'Picksaw', 'Kanit', Tahoma, Arial, sans-serif;
+  letter-spacing: 2px;
+}
+.volume-box {
+  position: fixed;
+  right: 40px;
+  bottom: 40px;
+  width: 32px;
+  height: 32px;
+  background: rgba(128, 29, 148, 0.671);
+  border-radius: 30px;
+  box-shadow: 0 2px 8px rgba(140, 0, 255, 0.582);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 12;
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+  /* position: relative; <-- ไม่ต้องใส่ถ้าใช้ fixed อยู่แล้ว */
+}
+
+.volume-box input[type="range"] {
+  display: none;
+  position: absolute;
+  left: 50%;
+  bottom: 200%;
+  transform: translateX(-50%) translateY(-16px) rotate(-90deg); /* หมุนแนวตั้ง */
+  width: 120px;
+  z-index: 30;
+  /* เพิ่มความสูงของ slider */
+  height: 77%;
+  background: #f8f8f8;
+  accent-color: #62008f;
+  border-radius: 8px;
+  padding: 5px 0;
+}
+.volume-box.show-slider input[type="range"] {
+  display: block;
+}
+
+.volume-box input[type="range"]:hover {
+  display: block;
+  pointer-events: auto;
+}
+.name-row {
+  display: flex;
+  align-items: center;
+  gap: 16px; /* ระยะห่างระหว่างชื่อกับนาฬิกา */
+}
   </style>
 </head>
 <body>
@@ -183,17 +253,17 @@
 
 <audio id="click-sound" src="Click.mp3"></audio>
 
-  <button id="toggleMusic">🔈</button>
 
   <div class="main-wrapper">
     <div class="content-box">
       <div class="profile-pic"></div>
-      <div class="text-area">
-        <div class="name-box">Guntsu_Z</div>
-        <div class="bio-box">
-          เล่น valo roblox lineranger เขียนcodeเป็นนนิดหน่อย
-        </div>
-      </div>
+<div class="text-area"> 
+  <div class="name-row">
+    <div class="name-box">Guntsu_Z</div>
+    <div class="clock-box" id="clockBox"></div>
+  </div>
+  <div class="bio-box"></div>
+</div>
     </div>
 <div class="icon-row">
   <div class="icon-button" data-label="Discord" data-url="https://discord.gg/AWxNu274uf">
@@ -205,22 +275,74 @@
   <div class="icon-button" data-label="Roblox" data-url="https://www.roblox.com/users/2812658645/profile">
     <i class="fa-solid fa-cube"></i>
   </div>
+   <div class="icon-button" data-label="Facebook" data-url="https://www.facebook.com/Guntsuji/">
+    <i class="fab fa-facebook"></i>
+  </div>
+  <div class="icon-button" data-label="Instagram" data-url="https://www.instagram.com/guntsuji/">
+    <i class="fab fa-instagram"></i>
+  </div>
 </div>
-<div id="icon-label" style="text-align:center; color:white; font-size:20px; margin-top:10px; min-height:24px;"></div>
+<div class="volume-box" id="volumeBox">
+  <i class="fa-solid fa-volume-high"></i>
+  <input id="musicVolume" type="range" min="0" max="1" step="0.01" value="1">
+</div>
+<div id="icon-label" style="text-align:center; color:white; font-size:24px; margin-top:20px; min-height:24px;"></div>
  <script>
-    document.getElementById('overlay').addEventListener('click', function() {
-      const clickSound = document.getElementById('click-sound');
-      clickSound.currentTime = 0
-      clickSound.play();
-      const overlayText = document.getElementById('overlay-text');
-      overlayText.classList.add('grow');
-      setTimeout(() => {
-        document.getElementById('overlay').style.display = 'none';
-        const music = document.getElementById('bg-music');
-        music.muted = false;
-        music.play();
-      }, 300); 
-    });
+function typeWriterEffect(element, text, speed = 60, callback) {
+  let i = 0;
+  element.textContent = "";
+  function type() {
+    if (i < text.length) {
+      element.textContent += text[i];
+      i++;
+      setTimeout(type, speed);
+    } else if (callback) {
+      callback();
+    }
+  }
+  type();
+}
+
+// overlay click event (ทำงานรอบเดียว)
+document.getElementById('overlay').addEventListener('click', function handler() {
+  // ปิดการคลิกซ้ำ
+  document.getElementById('overlay').removeEventListener('click', handler);
+
+  const clickSound = document.getElementById('click-sound');
+  clickSound.currentTime = 0;
+  clickSound.play();
+  const overlayText = document.getElementById('overlay-text');
+  overlayText.classList.add('grow');
+  setTimeout(() => {
+    document.getElementById('overlay').style.display = 'none';
+    const music = document.getElementById('bg-music');
+    music.muted = false;
+    music.play();
+
+    // พิมพ์ bio-box ทีละตัว
+    const bioBox = document.querySelector('.bio-box');
+    const bioText = "วันๆเล่นแต่เกม เล่นจนกูจะบ้าตายอยู่แล้ว";
+    typeWriterEffect(bioBox, bioText, 30);
+  }, 300);
+});
+
+// volume box
+document.getElementById('volumeBox').addEventListener('click', function(e) {
+  this.classList.toggle('show-slider');
+  e.stopPropagation();
+});
+document.addEventListener('click', function(e) {
+  document.getElementById('volumeBox').classList.remove('show-slider');
+});
+document.getElementById('musicVolume').addEventListener('click', function(e) {
+  e.stopPropagation();
+});
+document.getElementById('musicVolume').addEventListener('input', function() {
+  document.getElementById('bg-music').volume = this.value;
+});
+document.getElementById('bg-music').volume = document.getElementById('musicVolume').value;
+
+// icon button
 document.querySelectorAll('.icon-button').forEach(btn => {
   btn.addEventListener('mouseenter', function() {
     document.getElementById('icon-label').textContent = this.getAttribute('data-label');
@@ -238,8 +360,17 @@ document.querySelectorAll('.icon-button').forEach(btn => {
     e.preventDefault();
   });
 });
+function updateClock() {
+  const clock = document.getElementById('clockBox');
+  const now = new Date();
+  // แสดงเวลาแบบ HH:MM:SS
+  const h = String(now.getHours()).padStart(2, '0');
+  const m = String(now.getMinutes()).padStart(2, '0');
+  const s = String(now.getSeconds()).padStart(2, '0');
+  clock.textContent = `${h}:${m}:${s}`;
+}
+setInterval(updateClock, 1000);
+updateClock();
   </script>
-
-
 </body>
 </html>
