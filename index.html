@@ -235,6 +235,22 @@ animation: shake 0.4s;
   align-items: center;
   gap: 16px; /* ระยะห่างระหว่างชื่อกับนาฬิกา */
 }
+@media (max-width: 600px) {
+  .volume-box {
+    width: 56px;
+    height: 56px;
+    right: 20px;
+    bottom: 20px;
+    font-size: 2rem;
+  }
+  .volume-box i {
+    font-size: 2rem;
+  }
+  .volume-box input[type="range"] {
+    width: 180px;
+    height: 100%;
+  }
+}
   </style>
 </head>
 <body>
