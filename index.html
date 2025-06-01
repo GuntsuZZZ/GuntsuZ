@@ -122,33 +122,37 @@ animation: shake 0.4s;
       z-index: 1;
       font-weight: auto;
     }
-
-    .icon-row {
-      margin-top: 30px;
-      display: flex;
-      gap: 16px;
-      justify-content: center;
-    }
-
-    .icon-button {
-      width: 40px;
-      height: 40px;
-      background-color: #55009200;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      text-shadow: #40006d 0px 0px 10px;
-      font-size: 28px;
-      transition: transform 0.2s;
-      cursor: pointer;
-    }
-
-   .icon-button:hover {
-  transform: scale(1.5);
+.icon-row {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;   /* ปุ่มขยายขึ้นด้านบน */
+  gap: 24px;
+  min-height: 40px;        /* เพิ่มความสูงขั้นต่ำให้พอสำหรับปุ่มขยาย */;
+}
+.icon-button {
+  width: 30px;
+  height: 0px;
+  background-color: #55009200;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-shadow: #40006d 0px 0px 10px;
+  font-size: 28px;
+  transition: transform 0.2s, z-index 0s;
+  cursor: pointer;
+  flex-shrink: 0;
+  will-change: transform;
+  position: relative;
+  z-index: 2;
+}
+.icon-button:hover {
+  transform: scale(1.25);
+  z-index: 10;
   text-shadow:
-    0 0 12px #fff,
+    0 0 30px #fff,
     0 0 32px #a200ff,
     0 0 64px #a200ff,
     0 0 96px #a200ff;
@@ -156,6 +160,29 @@ animation: shake 0.4s;
   border-color: #fff;
   background: rgba(162, 0, 255, 0.35);
   color: #fff;
+}
+#icon-label {
+  text-align: center;
+  color: #fff;
+  font-size: 22px;
+  margin-top: 18px;
+  min-height: 32px;
+  letter-spacing: 1px;
+  font-family: 'Kanit', 'THAIFONT', sans-serif;
+  transition: opacity 0.2s;
+  opacity: 0.85;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Neon effect */
+  text-shadow:
+    0 0 8px #fff,
+    0 0 16px #a200ff,
+    0 0 32px #00fff7,
+    0 0 48px #a200ff;
+  border-radius: 16px;
+  padding: 4px 18px;
+  background: rgba(30,0,60,0.18);
 }
     #toggleMusic {
       position: fixed;
@@ -252,18 +279,18 @@ animation: shake 0.4s;
 }
 @media (max-width: 600px) {
   .volume-box {
-    width: 56px;
-    height: 56px;
-    right: 20px;
-    bottom: 20px;
-    font-size: 2rem;
+    width: 80px;
+    height: 80px;
+    right: 40px;
+    bottom: 40px;
+    font-size: 5rem;
   }
   .volume-box i {
-    font-size: 2rem;
+    font-size: 5rem;
   }
   .volume-box input[type="range"] {
-    width: 180px;
-    height: 100%;
+    width: 200px;
+    height: 120%;
   }
   #random-message-container {
   position: relative;
@@ -336,6 +363,8 @@ animation: shake 0.4s;
     <i class="fab fa-instagram"></i>
   </div>
 </div>
+<div id="icon-label"></div>
+
 <div class="volume-box" id="volumeBox">
   <i class="fa-solid fa-volume-high"></i>
   <input id="musicVolume" type="range" min="0" max="1" step="0.01" value="1">
@@ -485,12 +514,14 @@ document.getElementById('bg-music').volume = document.getElementById('musicVolum
 
 // icon button
 document.querySelectorAll('.icon-button').forEach(btn => {
+document.querySelectorAll('.icon-button').forEach(btn => {
   btn.addEventListener('mouseenter', function() {
     document.getElementById('icon-label').textContent = this.getAttribute('data-label');
   });
   btn.addEventListener('mouseleave', function() {
     document.getElementById('icon-label').textContent = '';
   });
+});
   btn.addEventListener('click', function(e) {
     const clickSound = document.getElementById('click-sound');
     clickSound.currentTime = 0;
