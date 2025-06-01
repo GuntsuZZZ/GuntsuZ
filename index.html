@@ -55,7 +55,7 @@ animation: shake 0.4s;
     }
 
     .content-box {
-      background-color: #270036a1;
+      background-color: #00000000;
       border-radius: 60px;
       padding: 20px;
       display: flex;
@@ -92,12 +92,12 @@ animation: shake 0.4s;
   font-family: 'Kanit', Tahoma, Arial, sans-serif;
   margin-bottom: 4px;
   letter-spacing: 2px;
-  text-shadow: 0 1px 8px #000;
+  text-shadow: 0 1px 20px #520088;
 }
     .name-box {
       background-color: rgba(24, 0, 51, 0);
       height: 40px;
-      width: 120px;
+      width: 180px;
       border-radius: 20px;
       display: flex;
       align-items: center;
@@ -105,16 +105,20 @@ animation: shake 0.4s;
       font-size: 39px;
       font-weight: bold;
       color: #ffffff;
+      text-shadow: #40006d 0px 0px 10px;
     }
 
     .bio-box {
-      background-color: rgba(34, 0, 61, 0.452);
+      background-color: rgba(0, 0, 0, 0);
       height: 80px;
       border-radius: 30px;
       padding: 10px;
       font-size: 18px;
       line-height: 1.5;
       color: #ffffff;
+      text-shadow: #25003f 0px 0px 10px;
+       border: 4px solid transparent;
+       z-index: 1;
     }
 
     .icon-row {
@@ -127,21 +131,30 @@ animation: shake 0.4s;
     .icon-button {
       width: 40px;
       height: 40px;
-      background-color: #25003f;
+      background-color: #55009200;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
+      text-shadow: #40006d 0px 0px 10px;
       font-size: 28px;
       transition: transform 0.2s;
       cursor: pointer;
     }
 
-    .icon-button:hover {
-      transform: scale(1.5);
-    }
-
+   .icon-button:hover {
+  transform: scale(1.5);
+  text-shadow:
+    0 0 12px #fff,
+    0 0 32px #a200ff,
+    0 0 64px #a200ff,
+    0 0 96px #a200ff;
+  color: #fff;
+  border-color: #fff;
+  background: rgba(162, 0, 255, 0.35);
+  color: #fff;
+}
     #toggleMusic {
       position: fixed;
       right: 40px;
@@ -250,12 +263,35 @@ animation: shake 0.4s;
     width: 180px;
     height: 100%;
   }
+  #random-message-container {
+  position: relative;
+  width: 100%;
+  height: 60px; /* ปรับความสูงตามต้องการ */
+  margin-top: 8px;
+  pointer-events: none;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+}
+#snow-canvas {
+  position: fixed;
+  left: 0; top: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 2;
 }
   </style>
 </head>
 <body>
+  <!-- วางไว้ก่อน </body> -->
+<div id="random-message-container" style="position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:1;"></div>
 <script src="scr.js"></script>
+<canvas id="snow-canvas"></canvas>
  <div id="overlay">
+
     <span id="overlay-text">C l i c k</span>
   </div>
   <video class="bg" autoplay muted loop>
@@ -278,7 +314,7 @@ animation: shake 0.4s;
     <div class="name-box">Guntsu_Z</div>
     <div class="clock-box" id="clockBox"></div>
   </div>
-  <div class="bio-box"></div>
+<div class="bio-box"></div>
 </div>
     </div>
 <div class="icon-row">
@@ -303,7 +339,8 @@ animation: shake 0.4s;
   <input id="musicVolume" type="range" min="0" max="1" step="0.01" value="1">
 </div>
 <div id="icon-label" style="text-align:center; color:white; font-size:24px; margin-top:20px; min-height:24px;"></div>
- <script>
+
+<script>
 function typeWriterEffect(element, text, speed = 60, callback) {
   let i = 0;
   element.textContent = "";
@@ -319,14 +356,96 @@ function typeWriterEffect(element, text, speed = 60, callback) {
   type();
 }
 
-// overlay click event (ทำงานรอบเดียว)
-document.getElementById('overlay').addEventListener('click', function handler() {
-  // ปิดการคลิกซ้ำ
-  document.getElementById('overlay').removeEventListener('click', handler);
+// อัปเดตนาฬิกา
+function updateClock() {
+  const clock = document.getElementById('clockBox');
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2, '0');
+  const m = String(now.getMinutes()).padStart(2, '0');
+  const s = String(now.getSeconds()).padStart(2, '0');
+  clock.textContent = `${h}:${m}:${s}`;
+}
+setInterval(updateClock, 1000);
+updateClock();
 
+// ฟังก์ชันสุ่มข้อความ
+function showRandomMessage(text, duration = 1500) {
+  const msg = document.createElement('div');
+  msg.textContent = text;
+  msg.style.position = 'absolute';
+  msg.style.zIndex = 1;
+  msg.style.fontSize = '2rem';
+  msg.style.color = '#fff';
+  msg.style.fontWeight = 'bold';
+  msg.style.pointerEvents = 'none';
+  msg.style.textShadow = '0 2px 8px #000';
+  msg.style.transition = 'opacity 0.5s';
+  msg.style.opacity = 0.3;
+  // msg.style.background = 'rgba(0,0,0,0.2)'; // ถ้าอยากให้เห็นชัดขึ้น
+console.log('showRandomMessage', left, top, overlapBio, tooClose, tryCount);
+  const container = document.getElementById('random-message-container');
+  do {
+  left = Math.random() * (vw - 200);
+  top = Math.random() * (vh - 60);
+  tryCount++;
+
+  // เช็คว่าทับ bio-box หรือไม่ (ใช้ค่าจาก getBoundingClientRect)
+  const overlapBio =
+    left + 200 > bioRect.left && left < bioRect.right &&
+    top + 60 > bioRect.top && top < bioRect.bottom;
+
+  // ... (เหมือนเดิม)
+} while ((overlapBio || tooClose) && tryCount < 20);
+  // เก็บตำแหน่งข้อความที่แสดงอยู่แล้ว
+  const existing = Array.from(container.children).map(el => {
+    return {
+      left: parseFloat(el.style.left) || 0,
+      top: parseFloat(el.style.top) || 0
+    };
+  });
+
+  let left, top, tryCount = 0, tooClose;
+  do {
+    left = Math.random() * (vw - 200);
+    top = Math.random() * (vh - 60);
+    tryCount++;
+
+    // ถ้าอยู่ในพื้นที่ bio-box ให้สุ่มใหม่
+    const overlapBio =
+      left + 200 > bioRect.left && left < bioRect.right &&
+      top + 60 > bioRect.top && top < bioRect.bottom;
+
+    // ถ้าอยู่ใกล้ข้อความอื่นเกินไป ให้สุ่มใหม่
+    tooClose = existing.some(pos => {
+      const dx = (left + 100) - (pos.left + 100);
+      const dy = (top + 30) - (pos.top + 30);
+      return Math.sqrt(dx * dx + dy * dy) < 80;
+    });
+
+  } while ((overlapBio || tooClose) && tryCount < 20);
+
+  msg.style.left = `${left}px`;
+  msg.style.top = `${top}px`;
+
+  container.appendChild(msg);
+
+  setTimeout(() => {
+    msg.style.opacity = 0;
+    setTimeout(() => msg.remove(), 500);
+  }, duration);
+}
+
+let overlayClicked = false;
+document.getElementById('overlay').addEventListener('click', function handler() {
+  if (overlayClicked) return;
+  overlayClicked = true;
+
+  // เล่นเสียงคลิก
   const clickSound = document.getElementById('click-sound');
   clickSound.currentTime = 0;
   clickSound.play();
+
+  // ทำ overlay จางหาย
   const overlayText = document.getElementById('overlay-text');
   overlayText.classList.add('grow');
   setTimeout(() => {
@@ -337,8 +456,12 @@ document.getElementById('overlay').addEventListener('click', function handler() 
 
     // พิมพ์ bio-box ทีละตัว
     const bioBox = document.querySelector('.bio-box');
-    const bioText = "วันๆเล่นแต่เกม เล่นจนกูจะบ้าตายอยู่แล้ว";
+    const bioText = "วันๆเล่นแต่เกม เล่นจนกูจะบ้าตายอยู่แล้ว\n" +
+                    "เล่น valo roblox minecraft \n" +
+                    "เป็นคนเข้าหาง่าย ไม่กัด\n" 
+                    "วันๆไม่ทำอะไรนอกจากเล่นเกม\n";
     typeWriterEffect(bioBox, bioText, 30);
+
   }, 300);
 });
 
@@ -376,17 +499,63 @@ document.querySelectorAll('.icon-button').forEach(btn => {
     e.preventDefault();
   });
 });
-function updateClock() {
-  const clock = document.getElementById('clockBox');
-  const now = new Date();
-  // แสดงเวลาแบบ HH:MM:SS
-  const h = String(now.getHours()).padStart(2, '0');
-  const m = String(now.getMinutes()).padStart(2, '0');
-  const s = String(now.getSeconds()).padStart(2, '0');
-  clock.textContent = `${h}:${m}:${s}`;
+// Snow effect
+const snowCanvas = document.getElementById('snow-canvas');
+const ctx = snowCanvas.getContext('2d');
+let snowflakes = [];
+
+function resizeSnowCanvas() {
+  snowCanvas.width = window.innerWidth;
+  snowCanvas.height = window.innerHeight;
 }
-setInterval(updateClock, 1000);
-updateClock();
-  </script>
+window.addEventListener('resize', resizeSnowCanvas);
+resizeSnowCanvas();
+
+function createSnowflake() {
+  return {
+    x: Math.random() * snowCanvas.width,
+    y: Math.random() * -snowCanvas.height,
+    r: Math.random() * 2 + 1,
+    d: Math.random() * 1 + 0.5,
+    opacity: Math.random() * 0.5 + 0.5
+  };
+}
+
+function drawSnowflakes() {
+  ctx.clearRect(0, 0, snowCanvas.width, snowCanvas.height);
+  ctx.fillStyle = "rgba(255,255,255,0.8)";
+  ctx.beginPath();
+  for (let i = 0; i < snowflakes.length; i++) {
+    let f = snowflakes[i];
+    ctx.globalAlpha = f.opacity;
+    ctx.moveTo(f.x, f.y);
+    ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2, true);
+  }
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  moveSnowflakes();
+}
+
+function moveSnowflakes() {
+  for (let i = 0; i < snowflakes.length; i++) {
+    let f = snowflakes[i];
+    f.y += f.d;
+    f.x += Math.sin(f.y * 0.01) * 0.5;
+    if (f.y > snowCanvas.height) {
+      snowflakes[i] = createSnowflake();
+      snowflakes[i].y = 0;
+    }
+  }
+}
+
+function snowLoop() {
+  if (snowflakes.length < 120) { 
+    snowflakes.push(createSnowflake());
+  }
+  drawSnowflakes();
+  requestAnimationFrame(snowLoop);
+}
+snowLoop();
+</script>
 </body>
 </html>
